@@ -1,0 +1,58 @@
+---
+- name: "[dehydrated] Install prerequisites"
+  apt:
+    update_cache: yes
+    name: "{{ packages }}"
+    state: present
+    vars:
+      packages:
+      - git
+      - openssl
+      - sed
+      - curl
+
+- name: "[dehydrated] Clone/Update from github"
+  git:
+    repo: https://github.com/lukas2511/dehydrated.git
+    dest: "{{ dehydrated_gitclone }}"
+
+- name: "[dehydrated] add Update cronjob "
+  cron:
+    name: dehydrated update certs
+    minute: "2"
+    hour: "2"
+    job: 'date >> /var/log/dehydrated.log && /opt/dehydrated/dehydrated -c -f /etc/ssl/dehydrated.conf >> /var/log/dehydrated.log && service nginx reload 2>&1'
+  when: dehydrated_enable_cron
+
+- name: "[dehydrated] directory for acme challenge"
+  become: yes
+  file:
+    state: directory
+    path: "{{ dehydrated_basedir }}/dehydrated"
+
+- name: "[dehydrated] create domains.txt"
+  become: yes
+  template:
+    src: "domains.txt.j2"
+    dest: "{{ dehydrated_basedir }}/domains.txt"
+
+- name: "[dehydrated] create dehydrated config"
+  become: yes
+  template:
+    src: "config.j2"
+    dest: "{{ dehydrated_basedir }}/dehydrated.conf"
+
+- name: "[dehydrated] check registered account"
+  command: "ls {{ dehydrated_basedir }}/accounts"
+  changed_when: false
+  register: result
+  ignore_errors: yes
+
+- name: "[dehydrated] register account key"
+  command: "/opt/dehydrated/dehydrated -f {{ dehydrated_basedir }}/dehydrated.conf --register --accept-terms"
+  register: register_result
+  when: result.stdout|length == 0
+
+- name: "[dehydrated] execute dehydrated"
+  command: "/opt/dehydrated/dehydrated -f {{ dehydrated_basedir }}/dehydrated.conf -c"
+  when: result.stdout|length > 1 or register_result is success

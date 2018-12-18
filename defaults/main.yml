@@ -1,0 +1,11 @@
+---
+dehydrated_domains: []
+  # - [example.com, www.example.com]
+  # - [example.net, www.example.net]
+  # - example.org
+
+dehydrated_contact_email: foo@example.com
+dehydrated_gitclone: /opt/dehydrated
+dehydrated_challenge_type: http-01
+dehydrated_basedir: /etc/ssl
+dehydrated_enable_cron: true
