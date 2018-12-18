@@ -16,6 +16,7 @@ No further requirements besides Bash and dehydrated requirements.
 Role Variables
 --------------
 
+```
 dehydrated_domains: []
   # - example.com, www.example.com
   # - example.net, www.example.net
@@ -24,6 +25,7 @@ dehydrated_gitclone: /opt/dehydrated
 dehydrated_challenge_type: http-01
 dehydrated_basedir: /etc/ssl
 dehydrated_contact_email: foo@example.com
+```
 
 Dependencies
 ------------
