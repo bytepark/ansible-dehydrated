@@ -4,12 +4,12 @@
     update_cache: yes
     name: "{{ packages }}"
     state: present
-    vars:
-      packages:
-      - git
-      - openssl
-      - sed
-      - curl
+  vars:
+    packages:
+    - git
+    - openssl
+    - sed
+    - curl
 
 - name: "[dehydrated] Clone/Update from github"
   git:
