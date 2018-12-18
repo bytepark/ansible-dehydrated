@@ -13,6 +13,7 @@ Requirements
 
 No further requirements besides Bash and dehydrated requirements.
 (openssl,  cURL, sed, grep, awk, mktemp)
+
 Role Variables
 --------------
 
@@ -48,4 +49,3 @@ Author Information
 ------------------
 
 bytepark / 2018.
-
