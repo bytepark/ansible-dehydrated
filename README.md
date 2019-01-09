@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bytepark/ansible-dehydrated.svg?branch=master)](https://travis-ci.org/bytepark/ansible-dehydrated)
+
 ansible-dehydrated
 =========
 
