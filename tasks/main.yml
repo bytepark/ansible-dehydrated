@@ -22,7 +22,19 @@
     minute: "2"
     hour: "2"
     job: 'date >> /var/log/dehydrated.log && /opt/dehydrated/dehydrated -c -f /etc/ssl/dehydrated.conf >> /var/log/dehydrated.log && service nginx reload 2>&1'
-  when: dehydrated_enable_cron
+  when: 
+    - dehydrated_enable_cron
+    - dehydrated_challenge_type == "http-01"
+    
+- name: "add Update cronjob "
+  cron:
+    name: dehydrated update certs
+    minute: "2"
+    hour: "2"
+    job: 'date >> /var/log/dehydrated.log && /opt/dehydrated/dehydrated -c -f /etc/ssl/dehydrated.conf -k {{ dehydrated_gitclone }}/hook-httpnet.sh >> /var/log/dehydrated.log && service nginx reload 2>&1'
+  when: 
+    - dehydrated_enable_cron
+    - dehydrated_challenge_type == "dns-01"
 
 - name: "directory for acme challenge"
   become: yes
@@ -68,5 +80,13 @@
   when: result.stdout|length == 0
 
 - name: "execute dehydrated"
+  command: "/opt/dehydrated/dehydrated -f {{ dehydrated_basedir }}/dehydrated.conf -c -k {{ dehydrated_gitclone }}/hook-httpnet.sh"
+  when:
+    - dehydrated_challenge_type == "dns-01"
+    - result.stdout|length > 1 or register_result is success
+    
+- name: "execute dehydrated"
   command: "/opt/dehydrated/dehydrated -f {{ dehydrated_basedir }}/dehydrated.conf -c"
-  when: result.stdout|length > 1 or register_result is success
+  when:
+    - dehydrated_challenge_type == "http-01"
+    - result.stdout|length > 1 or register_result is success
