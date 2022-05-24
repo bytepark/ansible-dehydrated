@@ -39,7 +39,7 @@
 - name: "copy http.net hook"
   copy:
     src: hook-httpnet.sh
-    dest: {{ dehydrated_gitclone }}/hook-httpnet.sh
+    dest: "{{ dehydrated_gitclone }}/hook-httpnet.sh"
     owner: root
     group: root
     mode: '0755'
