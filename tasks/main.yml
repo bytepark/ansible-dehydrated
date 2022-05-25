@@ -55,12 +55,13 @@
     owner: root
     group: root
     mode: '0755'
-  when: dehydrated_challenge_type == "http-01"
+  when: dehydrated_challenge_type == "dns-01"
 
 - name: "check if API key exists"
   file:
     state: file
     path: "{{ dehydrated_gitclone }}/.private"
+  when: dehydrated_challenge_type == "dns-01"
     
 - name: "create dehydrated config"
   become: yes
